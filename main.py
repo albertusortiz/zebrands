@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi import HTTPException
 
 from database import Nivel
 from database import Marca
@@ -39,6 +40,9 @@ async def inicio():
 
 @app.post('/usuarios')
 async def crear_usuario(usuario: UsuarioBaseModel):
+
+    if Usuario.select().where(Usuario.username == usuario.username).exists():
+        return HTTPException(409, 'El username ya se encuentra en uso.')
 
     hash_password = Usuario.create_password(usuario.password)
     
