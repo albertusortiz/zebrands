@@ -1,8 +1,9 @@
+from enum import unique
 import os
 from dotenv import load_dotenv
+from datetime import datetime
 
 from peewee import *
-
 
 load_dotenv()
 
@@ -13,3 +14,74 @@ PORT = os.getenv('PORTDB')
 DATABASE = os.getenv('DATABASE')
 
 database = MySQLDatabase(DATABASE, user=USERNAME, password=PASSWORD, host=HOST, port=int(PORT))
+
+
+class Nivel(Model):
+    nombre = CharField(max_length=15)
+    tipo = IntegerField()
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        database = database
+        table_name = 'niveles'
+
+
+class Marca(Model):
+    nombre = CharField(max_length=30)
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        database = database
+        table_name = 'marcas'
+
+
+class Usuario(Model):
+    nivel = ForeignKeyField(Nivel, backref='nivel')
+    username = CharField(max_length=20, unique=True)
+    password = CharField(max_length=50)
+    fecha_creacion = DateTimeField(default=datetime.now)
+    nombre_completo = CharField(max_length=100)
+    fecha_nacimiento = DateTimeField()
+    email = CharField(max_length=50)
+    telefono = CharField(max_length=15)
+    direccion = TextField()
+
+
+    def __str__(self):
+        return self.username
+
+    class Meta:
+        database = database
+        table_name = 'usuarios'
+
+class Producto(Model):
+    marca = ForeignKeyField(Marca, backref='marca')
+    sku = CharField(max_length=20, unique=True)
+    nombre = CharField(max_length=150)
+    precio = IntegerField()
+    fecha_alta = DateTimeField(default=datetime.now)
+    fecha_baja = DateTimeField()
+    estatus = BooleanField()
+
+    def __str__(self):
+        return self.nombre
+
+    class Meta:
+        database = database
+        table_name = 'productos'
+
+class UsuarioSeguimiento(Model):
+    usuario = ForeignKeyField(Usuario, backref='seguimiento')
+    producto = ForeignKeyField(Producto, backref='seguimiento')
+    fecha_visita = DateTimeField(default=datetime.now)
+
+    def __str__(self):
+        return f'{self.fecha_visita} | {self.usuario} | {self.producto}'
+
+    class Meta:
+        database = database
+        table_name = 'usuarios_seguimientos'

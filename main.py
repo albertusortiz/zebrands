@@ -1,4 +1,11 @@
 from fastapi import FastAPI
+
+from database import Nivel
+from database import Marca
+from database import Usuario
+from database import Producto
+from database import UsuarioSeguimiento
+
 from database import database as connection
 
 app = FastAPI(title='Sistema de Catalogo para Administrar Productos',
@@ -12,6 +19,8 @@ def startup():
         connection.connect()
 
         print('Connecting...')
+
+    connection.create_tables([Nivel, Marca, Usuario, Producto, UsuarioSeguimiento])
 
 @app.on_event('shutdown')
 def shutdown():
