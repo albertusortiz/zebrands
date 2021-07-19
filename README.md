@@ -7,8 +7,8 @@ En este proyecto seremos capaces de gestionar usuarios y productos delimitando a
 ![Modelo E-R](img/er_diagram.png)
 
 ## Tecnologias
-- FastAPI
-- MySQL
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [MySQL](https://www.mysql.com/)
 
 ## Deploy
 - [DigitalOcean](https://zebrands.herokuapp.com/docs)
