@@ -39,11 +39,13 @@ async def inicio():
 
 @app.post('/usuarios')
 async def crear_usuario(usuario: UsuarioBaseModel):
+
+    hash_password = Usuario.create_password(usuario.password)
     
     usuario = Usuario.create(
         nivel_id=usuario.nivel_id,
         username=usuario.username,
-        password=usuario.password,
+        password=hash_password,
         nombre_completo=usuario.nombre_completo,
         fecha_nacimiento=usuario.fecha_nacimiento,
         email=usuario.email,

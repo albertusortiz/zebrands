@@ -1,4 +1,5 @@
-from enum import unique
+import hashlib
+
 import os
 from dotenv import load_dotenv
 from datetime import datetime
@@ -57,6 +58,13 @@ class Usuario(Model):
     class Meta:
         database = database
         table_name = 'usuarios'
+
+    @classmethod
+    def create_password(cls, password):
+        h = hashlib.md5()
+
+        h.update(password.encode('utf-8'))
+        return h.hexdigest()
 
 class Producto(Model):
     marca = ForeignKeyField(Marca, backref='marca')
