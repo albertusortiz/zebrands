@@ -57,4 +57,7 @@ async def crear_usuario(usuario: UsuarioBaseModel):
         direccion=usuario.direccion
     )
 
-    return usuario.id
+    return {
+        'id': usuario.id,
+        'username': usuario.username
+    }
