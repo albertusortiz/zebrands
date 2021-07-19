@@ -3,7 +3,7 @@ from typing import Optional
 from pydantic import validator
 from pydantic import BaseModel
 
-class UsuarioBaseModel(BaseModel):
+class UsuarioRequestModel(BaseModel):
     nivel_id: int
     username: str
     password: str
@@ -54,3 +54,7 @@ class UsuarioBaseModel(BaseModel):
             raise ValueError('El telefóno no puede tener más de 15 digitós.')
 
         return telefono
+
+class UsuarioResponseModel(BaseModel):
+    id: int
+    username: str

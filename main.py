@@ -9,7 +9,8 @@ from database import UsuarioSeguimiento
 
 from database import database as connection
 
-from schemas import UsuarioBaseModel
+from schemas import UsuarioRequestModel
+from schemas import UsuarioResponseModel
 
 app = FastAPI(title='Sistema de Catalogo para Administrar Productos',
             description='En este proyecto seremos capaces de gestionar usuarios y productos delimitando accesos con base al rol de cada usuario.',
@@ -38,8 +39,8 @@ async def inicio():
     return 'Hola mundo, desde un servidor Flask'
 
 
-@app.post('/usuarios')
-async def crear_usuario(usuario: UsuarioBaseModel):
+@app.post('/usuarios', response_model=UsuarioResponseModel)
+async def crear_usuario(usuario: UsuarioRequestModel):
 
     if Usuario.select().where(Usuario.username == usuario.username).exists():
         return HTTPException(409, 'El username ya se encuentra en uso.')
@@ -57,7 +58,4 @@ async def crear_usuario(usuario: UsuarioBaseModel):
         direccion=usuario.direccion
     )
 
-    return {
-        'id': usuario.id,
-        'username': usuario.username
-    }
+    return UsuarioResponseModel(id=usuario.id, username=usuario.username)
