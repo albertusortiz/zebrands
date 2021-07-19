@@ -13,3 +13,6 @@ En este proyecto seremos capaces de gestionar usuarios y productos delimitando a
 ## Deploy
 - [DigitalOcean](https://zebrands.herokuapp.com/docs)
 - [Heroku](https://zebrands.herokuapp.com/docs)
+
+## Tipos de Usuario
+![Niveles de Usuarios](img/niveles.png)

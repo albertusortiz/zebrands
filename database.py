@@ -45,7 +45,7 @@ class Usuario(Model):
     password = CharField(max_length=50)
     fecha_creacion = DateTimeField(default=datetime.now)
     nombre_completo = CharField(max_length=100)
-    fecha_nacimiento = DateTimeField()
+    fecha_nacimiento = DateField()
     email = CharField(max_length=50)
     telefono = CharField(max_length=15)
     direccion = TextField()
