@@ -189,9 +189,9 @@ async def obtener_usuario_id(usuario_id: int):
     return usuario_id
 
 @app.get('/productos', response_model=List[ProductoResponseModel])
-async def obtener_productos():
+async def obtener_productos(page: int = 1, limit : int = 10):
     
-    productos = Producto.select()
+    productos = Producto.select().paginate(page, limit)
 
     return [producto for producto in productos]
 
