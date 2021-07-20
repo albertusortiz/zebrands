@@ -172,9 +172,9 @@ async def obtener_marca_id(marca_id: int):
     return marca_id
 
 @app.get('/usuarios', response_model=List[UsuarioResponseModel])
-async def obtener_usuarios():
+async def obtener_usuarios(page: int = 1, limit : int = 10):
     
-    usuarios = Usuario.select()
+    usuarios = Usuario.select().paginate(page, limit)
 
     return [usuario for usuario in usuarios]
 
