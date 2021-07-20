@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi import HTTPException
+from pydantic.errors import NotNoneError
 
 from database import Nivel
 from database import Marca
@@ -50,7 +51,7 @@ async def inicio():
 async def crear_nivel_de_usuario(nivel: NivelRequestModel):
 
     if Nivel.select().where(Nivel.tipo == nivel.tipo).exists():
-        raise HTTPException(409, 'El tipo de nivel de usuario ya se encuentra en uso.')
+        raise HTTPException(status_code=409, detail='El tipo de nivel de usuario ya se encuentra en uso.')
 
     nivel = Nivel.create(
         nombre=nivel.nombre,
@@ -72,7 +73,10 @@ async def crear_marca(marca: MarcaRequestModel):
 async def crear_usuario(usuario: UsuarioRequestModel):
 
     if Usuario.select().where(Usuario.username == usuario.username).exists():
-        raise HTTPException(409, 'El username ya se encuentra en uso.')
+        raise HTTPException(status_code=409, detail='El username ya se encuentra en uso.')
+
+    if Nivel.select().where(Nivel.id == usuario.nivel_id).first() is None:
+        raise HTTPException(status_code=404, detail="Nivel de usuario no encontrado")
 
     hash_password = Usuario.create_password(usuario.password)
     
@@ -93,7 +97,10 @@ async def crear_usuario(usuario: UsuarioRequestModel):
 async def crear_producto(producto: ProductoRequestModel):
     
     if Producto.select().where(Producto.sku == producto.sku).exists():
-        raise HTTPException(409, 'Este SKU ya existe en el catálogo')
+        raise HTTPException(status_code=409, detail='Este SKU ya existe en el catálogo.')
+
+    if Marca.select().where(Marca.id == producto.marca_id).first() is None:
+        raise HTTPException(status_code=404, detail='Marca no encontrada.')
 
     producto = Producto.create(
         marca_id = producto.marca_id,
@@ -107,6 +114,13 @@ async def crear_producto(producto: ProductoRequestModel):
 
 @app.post('/seguimiento', response_model=SeguimientoUsuariosResponseModel)
 async def seguimiento_de_usuarios(seguimiento: SeguimientoUsuariosRequestModel):
+
+    if Usuario.select().where(Usuario.id == seguimiento.usuario_id).first() is None:
+        raise HTTPException(status_code=404, detail='Usuario no encontrado')
+
+    if Producto.select().where(Producto.id == seguimiento.producto_id).first() is None:
+        raise HTTPException(status_code=404, detail='Producto no encontrado')
+
 
     seguimiento = SeguimientoUsuario.create(
         usuario_id = seguimiento.usuario_id,

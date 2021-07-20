@@ -56,13 +56,6 @@ class UsuarioRequestModel(BaseModel):
     telefono: str
     direccion: str
 
-    @validator('nivel_id')
-    def nivel_id_validator(cls, nivel_id):
-        if nivel_id < 1 or nivel_id > 2:
-            raise ValueError('Nivel de usuario invalido.')
-
-        return nivel_id
-
     @validator('username')
     def username_validator(cls, username):
         if len(username) < 8 or len(username) > 20:
@@ -114,13 +107,6 @@ class ProductoRequestModel(BaseModel):
     nombre: str
     precio: float
     estatus: bool
-
-    @validator('marca_id')
-    def marca_id_validator(cls, marca_id):
-        if marca_id < 1 or marca_id > 3:
-            raise ValueError('Marca invalida.')
-
-        return marca_id
 
     @validator('sku')
     def sku_validator(cls, sku):
