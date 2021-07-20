@@ -34,3 +34,7 @@ Productos
 Seguimiento de Usuarios
 
 ![Productos](img/seguimiento_usuarios.png)
+
+## Endpoints
+
+![Ednpoints](img/endpoints.png)
