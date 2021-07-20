@@ -21,6 +21,30 @@ class PeweeGetterDict(GetterDict):
 
         return res
 
+class NivelRequestModel(BaseModel):
+    nombre: str
+    tipo: int
+
+class NivelResponseModel(BaseModel):
+    id: int
+    nombre: str
+    tipo: int
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeweeGetterDict
+
+class MarcaRequestModel(BaseModel):
+    nombre: str
+
+class MarcaResponseModel(BaseModel):
+    id: int
+    nombre: str
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeweeGetterDict
+
 class UsuarioRequestModel(BaseModel):
     nivel_id: int
     username: str
@@ -78,30 +102,6 @@ class UsuarioResponseModel(BaseModel):
     nivel_id: int
     username: str
     fecha_creacion: date
-
-    class Config:
-        orm_mode = True
-        getter_dict = PeweeGetterDict
-
-class NivelRequestModel(BaseModel):
-    nombre: str
-    tipo: int
-
-class NivelResponseModel(BaseModel):
-    id: int
-    nombre: str
-    tipo: int
-
-    class Config:
-        orm_mode = True
-        getter_dict = PeweeGetterDict
-
-class MarcaRequestModel(BaseModel):
-    nombre: str
-
-class MarcaResponseModel(BaseModel):
-    id: int
-    nombre: str
 
     class Config:
         orm_mode = True

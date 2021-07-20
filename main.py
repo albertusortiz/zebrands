@@ -40,29 +40,8 @@ def shutdown():
 
 @app.get('/')
 async def inicio():
-    return 'Hola mundo, desde un servidor Flask'
+    return 'Hola mundo, desde un servidor FastAPI'
 
-
-@app.post('/usuarios', response_model=UsuarioResponseModel)
-async def crear_usuario(usuario: UsuarioRequestModel):
-
-    if Usuario.select().where(Usuario.username == usuario.username).exists():
-        raise HTTPException(409, 'El username ya se encuentra en uso.')
-
-    hash_password = Usuario.create_password(usuario.password)
-    
-    usuario = Usuario.create(
-        nivel_id=usuario.nivel_id,
-        username=usuario.username,
-        password=hash_password,
-        nombre_completo=usuario.nombre_completo,
-        fecha_nacimiento=usuario.fecha_nacimiento,
-        email=usuario.email,
-        telefono=usuario.telefono,
-        direccion=usuario.direccion
-    )
-
-    return usuario
 
 @app.post('/niveles', response_model=NivelResponseModel)
 async def crear_nivel_de_usuario(nivel: NivelRequestModel):
@@ -85,3 +64,25 @@ async def crear_marca(marca: MarcaRequestModel):
     )
 
     return marca
+
+
+@app.post('/usuarios', response_model=UsuarioResponseModel)
+async def crear_usuario(usuario: UsuarioRequestModel):
+
+    if Usuario.select().where(Usuario.username == usuario.username).exists():
+        raise HTTPException(409, 'El username ya se encuentra en uso.')
+
+    hash_password = Usuario.create_password(usuario.password)
+    
+    usuario = Usuario.create(
+        nivel_id=usuario.nivel_id,
+        username=usuario.username,
+        password=hash_password,
+        nombre_completo=usuario.nombre_completo,
+        fecha_nacimiento=usuario.fecha_nacimiento,
+        email=usuario.email,
+        telefono=usuario.telefono,
+        direccion=usuario.direccion
+    )
+
+    return usuario
