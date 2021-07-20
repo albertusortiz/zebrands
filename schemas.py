@@ -1,3 +1,4 @@
+from database import Producto
 from datetime import date
 from datetime import datetime
 
@@ -99,7 +100,7 @@ class UsuarioRequestModel(BaseModel, UsuarioValidator):
 
 class UsuarioResponseModel(ResponseModel):
     id: int
-    nivel_id: int
+    nivel: NivelResponseModel
     username: str
     fecha_creacion: date
 
@@ -151,7 +152,7 @@ class ProductoRequestModel(BaseModel, ProductoValidator):
 
 class ProductoResponseModel(ResponseModel):
     id: int
-    marca_id: int
+    marca: MarcaResponseModel
     sku: str
     nombre: str
     precio: float
@@ -171,6 +172,6 @@ class SeguimientoUsuariosRequestModel(BaseModel):
 
 class SeguimientoUsuariosResponseModel(ResponseModel):
     id: int
-    usuario_id: int
-    producto_id: int
+    usuario: UsuarioResponseModel
+    producto: ProductoResponseModel
     fecha_visita: datetime
