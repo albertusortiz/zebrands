@@ -33,7 +33,7 @@ class UsuarioRequestModel(BaseModel):
 
     @validator('nivel_id')
     def nivel_id_validator(cls, nivel_id):
-        if nivel_id < 9 or nivel_id > 10:
+        if nivel_id < 1 or nivel_id > 2:
             raise ValueError('Nivel de usuario invalido.')
 
         return nivel_id

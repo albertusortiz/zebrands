@@ -22,3 +22,6 @@ Niveles de Usuarios
 Marcas
 
 ![Marcas](img/marcas.png)
+
+Usuarios
+![Usuarios](img/usuarios.png)
