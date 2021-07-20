@@ -82,3 +82,27 @@ class UsuarioResponseModel(BaseModel):
     class Config:
         orm_mode = True
         getter_dict = PeweeGetterDict
+
+class NivelRequestModel(BaseModel):
+    nombre: str
+    tipo: int
+
+class NivelResponseModel(BaseModel):
+    id: int
+    nombre: str
+    tipo: int
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeweeGetterDict
+
+class MarcaRequestModel(BaseModel):
+    marca: str
+
+class MarcaResponseModel(BaseModel):
+    id: int
+    marca: str
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeweeGetterDict

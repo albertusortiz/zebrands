@@ -14,5 +14,6 @@ En este proyecto seremos capaces de gestionar usuarios y productos delimitando a
 - [DigitalOcean](https://zebrands.herokuapp.com/docs)
 - [Heroku](https://zebrands.herokuapp.com/docs)
 
-## Tipos de Usuario
+## Catalogos
+Niveles de Usuarios
 ![Niveles de Usuarios](img/niveles.png)

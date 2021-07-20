@@ -11,6 +11,10 @@ from database import database as connection
 
 from schemas import UsuarioRequestModel
 from schemas import UsuarioResponseModel
+from schemas import NivelRequestModel
+from schemas import NivelResponseModel
+from schemas import MarcaRequestModel
+from schemas import MarcaResponseModel
 
 app = FastAPI(title='Sistema de Catalogo para Administrar Productos',
             description='En este proyecto seremos capaces de gestionar usuarios y productos delimitando accesos con base al rol de cada usuario.',
@@ -43,7 +47,7 @@ async def inicio():
 async def crear_usuario(usuario: UsuarioRequestModel):
 
     if Usuario.select().where(Usuario.username == usuario.username).exists():
-        return HTTPException(409, 'El username ya se encuentra en uso.')
+        raise HTTPException(409, 'El username ya se encuentra en uso.')
 
     hash_password = Usuario.create_password(usuario.password)
     
@@ -59,3 +63,20 @@ async def crear_usuario(usuario: UsuarioRequestModel):
     )
 
     return usuario
+
+@app.post('/niveles', response_model=NivelResponseModel)
+async def crear_nivel(nivel: NivelRequestModel):
+
+    print(type(Nivel.tipo))
+    print(type(nivel.tipo))
+    print(Nivel.select().where(Nivel.tipo == nivel.tipo).exists())
+
+    if Nivel.select().where(Nivel.tipo == nivel.tipo).exists():
+        raise HTTPException(409, 'El tipo de nivel de usuario ya se encuentra en uso.')
+
+    nivel = Nivel.create(
+        nombre=nivel.nombre,
+        tipo=nivel.tipo
+    )
+
+    return nivel
