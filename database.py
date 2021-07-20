@@ -70,7 +70,7 @@ class Producto(Model):
     marca = ForeignKeyField(Marca, backref='marca')
     sku = CharField(max_length=20, unique=True)
     nombre = CharField(max_length=150)
-    precio = IntegerField()
+    precio = FloatField()
     fecha_alta = DateTimeField(default=datetime.now)
     fecha_baja = DateTimeField()
     estatus = BooleanField()

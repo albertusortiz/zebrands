@@ -1,5 +1,8 @@
+from os import pread
+from types import prepare_class
 from fastapi import FastAPI
 from fastapi import HTTPException
+from starlette.requests import HTTPConnection
 
 from database import Nivel
 from database import Marca
@@ -9,12 +12,14 @@ from database import UsuarioSeguimiento
 
 from database import database as connection
 
-from schemas import UsuarioRequestModel
-from schemas import UsuarioResponseModel
 from schemas import NivelRequestModel
 from schemas import NivelResponseModel
 from schemas import MarcaRequestModel
 from schemas import MarcaResponseModel
+from schemas import UsuarioRequestModel
+from schemas import UsuarioResponseModel
+from schemas import ProductoRequestModel
+from schemas import ProductoResponseModel
 
 app = FastAPI(title='Sistema de Catalogo para Administrar Productos',
             description='En este proyecto seremos capaces de gestionar usuarios y productos delimitando accesos con base al rol de cada usuario.',
@@ -86,3 +91,18 @@ async def crear_usuario(usuario: UsuarioRequestModel):
     )
 
     return usuario
+
+
+@app.post('/productos', response_model=ProductoResponseModel)
+async def crear_producto(producto: ProductoRequestModel):
+    
+    if Producto.select().where(Producto.sku == producto.sku).exists():
+        raise HTTPException(409, 'Este SKU ya existe en el catálogo')
+
+    producto = Producto.create(
+        marca_id = producto.marca_id,
+        sku = producto.sku,
+        nombre = producto.nombre,
+        precio = producto.precio,
+        estatus = producto.estatus
+    )

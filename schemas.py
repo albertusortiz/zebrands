@@ -1,4 +1,5 @@
 from datetime import date
+from datetime import datetime
 
 from typing import Any
 from typing import Optional
@@ -102,6 +103,62 @@ class UsuarioResponseModel(BaseModel):
     nivel_id: int
     username: str
     fecha_creacion: date
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeweeGetterDict
+
+class ProductoRequestModel(BaseModel):
+    marca_id: int
+    sku: str
+    nombre: str
+    precio: int
+    estatus: bool
+
+    @validator('marca_id')
+    def marca_id_validator(cls, marca_id):
+        if marca_id < 1 or marca_id > 3:
+            raise ValueError('Marca invalida.')
+
+        return marca_id
+
+    @validator('sku')
+    def sku_validator(cls, sku):
+        if len(sku) < 8 or len(sku) > 12:
+            raise ValueError('SKU invalido.')
+
+        return sku
+
+    @validator('nombre')
+    def nombre_validator(cls, nombre):
+        if len(nombre) > 150:
+            raise ValueError('El nombre no puede tener más de 150 caracteres.')
+
+        return nombre
+
+    @validator('precio')
+    def precio_validator(cls, precio):
+        if precio < 0:
+            raise ValueError('El valor debe ser positivo.')
+
+        return precio
+
+    @validator('estatus')
+    def estatus_validator(cls, estatus):
+        if estatus < 0 or estatus > 1:
+            raise ValueError('El estatus solo es ACTIVO[1] o INACTIVO[0].')
+
+        return estatus
+
+class ProductoResponseModel(BaseModel):
+    id: int
+    marca_id: int
+    sku: str
+    nombre: str
+    precio: int
+    fecha_alta: datetime
+    fecha_baja: datetime
+    estatus: bool
 
     class Config:
         orm_mode = True
