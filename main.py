@@ -1,6 +1,7 @@
+from typing import List
+
 from fastapi import FastAPI
 from fastapi import HTTPException
-from pydantic.errors import NotNoneError
 
 from database import Nivel
 from database import Marca
@@ -128,3 +129,17 @@ async def seguimiento_de_usuarios(seguimiento: SeguimientoUsuariosRequestModel):
     )
 
     return seguimiento
+
+@app.get('/niveles', response_model=List[NivelResponseModel])
+async def obtener_nivel_de_usuarios():
+    
+    niveles = Nivel.select()
+
+    return [nivel for nivel in niveles]
+
+@app.get('/marcas', response_model=List[MarcaResponseModel])
+async def obtener_marcas():
+    
+    marcas = Marca.select()
+
+    return [marca for marca in marcas]
