@@ -5,7 +5,7 @@ from database import Nivel
 from database import Marca
 from database import Usuario
 from database import Producto
-from database import UsuarioSeguimiento
+from database import SeguimientoUsuario
 
 from database import database as connection
 
@@ -17,6 +17,8 @@ from schemas import UsuarioRequestModel
 from schemas import UsuarioResponseModel
 from schemas import ProductoRequestModel
 from schemas import ProductoResponseModel
+from schemas import SeguimientoUsuariosRequestModel
+from schemas import SeguimientoUsuariosResponseModel
 
 app = FastAPI(title='Sistema de Catalogo para Administrar Productos',
             description='En este proyecto seremos capaces de gestionar usuarios y productos delimitando accesos con base al rol de cada usuario.',
@@ -30,7 +32,7 @@ def startup():
 
         print('Connecting...')
 
-    connection.create_tables([Nivel, Marca, Usuario, Producto, UsuarioSeguimiento])
+    connection.create_tables([Nivel, Marca, Usuario, Producto, SeguimientoUsuario])
 
 @app.on_event('shutdown')
 def shutdown():
@@ -43,7 +45,6 @@ def shutdown():
 @app.get('/')
 async def inicio():
     return 'Hola mundo, desde un servidor FastAPI'
-
 
 @app.post('/niveles', response_model=NivelResponseModel)
 async def crear_nivel_de_usuario(nivel: NivelRequestModel):
@@ -67,7 +68,6 @@ async def crear_marca(marca: MarcaRequestModel):
 
     return marca
 
-
 @app.post('/usuarios', response_model=UsuarioResponseModel)
 async def crear_usuario(usuario: UsuarioRequestModel):
 
@@ -89,7 +89,6 @@ async def crear_usuario(usuario: UsuarioRequestModel):
 
     return usuario
 
-
 @app.post('/productos', response_model=ProductoResponseModel)
 async def crear_producto(producto: ProductoRequestModel):
     
@@ -105,3 +104,13 @@ async def crear_producto(producto: ProductoRequestModel):
     )
 
     return producto
+
+@app.post('/seguimiento', response_model=SeguimientoUsuariosResponseModel)
+async def seguimiento_de_usuarios(seguimiento: SeguimientoUsuariosRequestModel):
+
+    seguimiento = SeguimientoUsuario.create(
+        usuario_id = seguimiento.usuario_id,
+        producto_id = seguimiento.producto_id
+    )
+
+    return seguimiento

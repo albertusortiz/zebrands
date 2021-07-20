@@ -82,7 +82,7 @@ class Producto(Model):
         database = database
         table_name = 'productos'
 
-class UsuarioSeguimiento(Model):
+class SeguimientoUsuario(Model):
     usuario = ForeignKeyField(Usuario, backref='seguimiento')
     producto = ForeignKeyField(Producto, backref='seguimiento')
     fecha_visita = DateTimeField(default=datetime.now)

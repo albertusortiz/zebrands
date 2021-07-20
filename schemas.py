@@ -162,3 +162,17 @@ class ProductoResponseModel(BaseModel):
     class Config:
         orm_mode = True
         getter_dict = PeweeGetterDict
+
+class SeguimientoUsuariosRequestModel(BaseModel):
+    usuario_id: int
+    producto_id: int
+
+class SeguimientoUsuariosResponseModel(BaseModel):
+    id: int
+    usuario_id: int
+    producto_id: int
+    fecha_visita: datetime
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeweeGetterDict
