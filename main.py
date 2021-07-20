@@ -271,3 +271,15 @@ async def eliminar_un_usuario(usuario_id: int):
     usuario_id.delete_instance()
 
     return usuario_id
+
+@app.delete('/productos/{producto_id}', response_model=ProductoResponseModel)
+async def eliminar_un_producto(producto_id: int):
+
+    producto_id = Producto.select().where(Producto.id == producto_id).first()
+
+    if producto_id is None:
+        raise HTTPException(status_code=404, detail='Producto no encontrado.')
+    
+    producto_id.delete_instance()
+
+    return producto_id
