@@ -65,11 +65,7 @@ async def crear_usuario(usuario: UsuarioRequestModel):
     return usuario
 
 @app.post('/niveles', response_model=NivelResponseModel)
-async def crear_nivel(nivel: NivelRequestModel):
-
-    print(type(Nivel.tipo))
-    print(type(nivel.tipo))
-    print(Nivel.select().where(Nivel.tipo == nivel.tipo).exists())
+async def crear_nivel_de_usuario(nivel: NivelRequestModel):
 
     if Nivel.select().where(Nivel.tipo == nivel.tipo).exists():
         raise HTTPException(409, 'El tipo de nivel de usuario ya se encuentra en uso.')
@@ -80,3 +76,12 @@ async def crear_nivel(nivel: NivelRequestModel):
     )
 
     return nivel
+
+@app.post('/marcas', response_model=MarcaResponseModel)
+async def crear_marca(marca: MarcaRequestModel):
+
+    marca = Marca.create(
+        nombre=marca.nombre
+    )
+
+    return marca

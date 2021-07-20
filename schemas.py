@@ -97,11 +97,11 @@ class NivelResponseModel(BaseModel):
         getter_dict = PeweeGetterDict
 
 class MarcaRequestModel(BaseModel):
-    marca: str
+    nombre: str
 
 class MarcaResponseModel(BaseModel):
     id: int
-    marca: str
+    nombre: str
 
     class Config:
         orm_mode = True
