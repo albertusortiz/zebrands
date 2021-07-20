@@ -1,7 +1,25 @@
 from datetime import date
+
+from typing import Any
 from typing import Optional
+from peewee import ModelSelect
+
 from pydantic import validator
 from pydantic import BaseModel
+
+from peewee import ModelSelect
+
+from pydantic.utils import GetterDict
+
+
+class PeweeGetterDict(GetterDict):
+    def get(self, key: Any, default: Any = None):
+
+        res = getattr(self._obj, key, default)
+        if isinstance(res, ModelSelect):
+            return list(res)
+
+        return res
 
 class UsuarioRequestModel(BaseModel):
     nivel_id: int
@@ -57,4 +75,10 @@ class UsuarioRequestModel(BaseModel):
 
 class UsuarioResponseModel(BaseModel):
     id: int
+    nivel_id: int
     username: str
+    fecha_creacion: date
+
+    class Config:
+        orm_mode = True
+        getter_dict = PeweeGetterDict
