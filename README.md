@@ -24,4 +24,9 @@ Marcas
 ![Marcas](img/marcas.png)
 
 Usuarios
+
 ![Usuarios](img/usuarios.png)
+
+Productos
+
+![Productos](img/productos.png)
