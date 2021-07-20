@@ -30,3 +30,7 @@ Usuarios
 Productos
 
 ![Productos](img/productos.png)
+
+Seguimiento de Usuarios
+
+![Productos](img/seguimiento_usuarios.png)
