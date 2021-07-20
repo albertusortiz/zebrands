@@ -14,12 +14,17 @@ from database import database as connection
 
 from schemas import NivelRequestModel
 from schemas import NivelResponseModel
+
 from schemas import MarcaRequestModel
 from schemas import MarcaResponseModel
+
 from schemas import UsuarioRequestModel
 from schemas import UsuarioResponseModel
+from schemas import UsuarioRequestPutModel
+
 from schemas import ProductoRequestModel
 from schemas import ProductoResponseModel
+
 from schemas import SeguimientoUsuariosRequestModel
 from schemas import SeguimientoUsuariosResponseModel
 
@@ -215,3 +220,23 @@ async def obtener_seguimiento_id(seguimiento_id: int):
         raise HTTPException(status_code=404, detail='Seguimiento de usuario no encontrado.')
 
     return seguimiento_id
+
+@app.put('/usuarios/{usuario_id}', response_model=UsuarioResponseModel)
+async def actualizar_usuario(usuario_id: int, review_request: UsuarioRequestPutModel):
+    
+    usuario_id = Usuario.select().where(Usuario.id == usuario_id).first()
+
+    if usuario_id is None:
+        raise HTTPException(status_code=404, detail='Usuario no encontrada.')
+
+    usuario_id.username = review_request.username
+    usuario_id.password = review_request.password
+    usuario_id.nombre_completo = review_request.nombre_completo
+    usuario_id.fecha_nacimiento = review_request.fecha_nacimiento
+    usuario_id.email = review_request.email
+    usuario_id.telefono = review_request.telefono
+    usuario_id.direccion = review_request.direccion
+
+    usuario_id.save()
+
+    return usuario_id

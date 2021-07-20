@@ -46,15 +46,7 @@ class MarcaResponseModel(BaseModel):
         orm_mode = True
         getter_dict = PeweeGetterDict
 
-class UsuarioRequestModel(BaseModel):
-    nivel_id: int
-    username: str
-    password: str
-    nombre_completo: str
-    fecha_nacimiento: Optional[date] = None
-    email: str
-    telefono: str
-    direccion: str
+class UsuarioValidator():
 
     @validator('username')
     def username_validator(cls, username):
@@ -91,6 +83,16 @@ class UsuarioRequestModel(BaseModel):
 
         return telefono
 
+class UsuarioRequestModel(BaseModel, UsuarioValidator):
+    nivel_id: int
+    username: str
+    password: str
+    nombre_completo: str
+    fecha_nacimiento: Optional[date] = None
+    email: str
+    telefono: str
+    direccion: str
+
 class UsuarioResponseModel(BaseModel):
     id: int
     nivel_id: int
@@ -100,6 +102,15 @@ class UsuarioResponseModel(BaseModel):
     class Config:
         orm_mode = True
         getter_dict = PeweeGetterDict
+
+class UsuarioRequestPutModel(BaseModel, UsuarioValidator):
+    username: str
+    password: str
+    nombre_completo: str
+    fecha_nacimiento: Optional[date] = None
+    email: str
+    telefono: str
+    direccion: str
 
 class ProductoRequestModel(BaseModel):
     marca_id: int
