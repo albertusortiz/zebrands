@@ -12,7 +12,7 @@ from database import SeguimientoUsuario
 
 from database import database as connection
 
-from schemas import NivelRequestModel
+from schemas import NivelRequestModel, ProductoRequestPutModel
 from schemas import NivelResponseModel
 
 from schemas import MarcaRequestModel
@@ -24,6 +24,7 @@ from schemas import UsuarioRequestPutModel
 
 from schemas import ProductoRequestModel
 from schemas import ProductoResponseModel
+from schemas import ProductoValidator
 
 from schemas import SeguimientoUsuariosRequestModel
 from schemas import SeguimientoUsuariosResponseModel
@@ -240,3 +241,21 @@ async def actualizar_usuario(usuario_id: int, review_request: UsuarioRequestPutM
     usuario_id.save()
 
     return usuario_id
+
+@app.put('/productos/{producto_id}', response_model=ProductoResponseModel)
+async def actualizar_producto(producto_id: int, review_request: ProductoRequestPutModel):
+
+    producto_id = Producto.select().where(Producto.id == producto_id).first()
+
+    if producto_id is None:
+        raise HTTPException(status_code=404, detail='Producto no encontrado.')
+
+    producto_id.marca_id = review_request.marca_id
+    producto_id.sku = review_request.sku
+    producto_id.nombre = review_request.nombre
+    producto_id.precio = review_request.precio
+    producto_id.estatus = review_request.estatus
+
+    producto_id.save()
+
+    return producto_id

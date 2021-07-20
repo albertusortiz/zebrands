@@ -112,12 +112,7 @@ class UsuarioRequestPutModel(BaseModel, UsuarioValidator):
     telefono: str
     direccion: str
 
-class ProductoRequestModel(BaseModel):
-    marca_id: int
-    sku: str
-    nombre: str
-    precio: float
-    estatus: bool
+class ProductoValidator():
 
     @validator('sku')
     def sku_validator(cls, sku):
@@ -147,6 +142,13 @@ class ProductoRequestModel(BaseModel):
 
         return estatus
 
+class ProductoRequestModel(BaseModel, ProductoValidator):
+    marca_id: int
+    sku: str
+    nombre: str
+    precio: float
+    estatus: bool
+
 class ProductoResponseModel(BaseModel):
     id: int
     marca_id: int
@@ -159,6 +161,13 @@ class ProductoResponseModel(BaseModel):
     class Config:
         orm_mode = True
         getter_dict = PeweeGetterDict
+
+class ProductoRequestPutModel(BaseModel, ProductoValidator):
+    marca_id: int
+    sku: str
+    nombre: str
+    precio: float
+    estatus: bool
 
 class SeguimientoUsuariosRequestModel(BaseModel):
     usuario_id: int
