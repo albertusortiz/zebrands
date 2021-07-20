@@ -206,9 +206,9 @@ async def obtener_producto_id(producto_id: int):
     return producto_id
 
 @app.get('/seguimiento', response_model=List[SeguimientoUsuariosResponseModel])
-async def obtener_seguimiento_de_usuarios():
+async def obtener_seguimiento_de_usuarios(page: int = 1, limit : int = 10):
     
-    seguimientos = SeguimientoUsuario.select()
+    seguimientos = SeguimientoUsuario.select().paginate(page, limit)
 
     return [seguimiento for seguimiento in seguimientos]
 
