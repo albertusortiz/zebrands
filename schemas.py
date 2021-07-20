@@ -22,29 +22,33 @@ class PeweeGetterDict(GetterDict):
 
         return res
 
+class ResponseModel(BaseModel):
+    
+    class Config:
+        orm_mode = True
+        getter_dict = PeweeGetterDict
+
+# ---------- Niveles ----------
+
 class NivelRequestModel(BaseModel):
     nombre: str
     tipo: int
 
-class NivelResponseModel(BaseModel):
+class NivelResponseModel(ResponseModel):
     id: int
     nombre: str
     tipo: int
 
-    class Config:
-        orm_mode = True
-        getter_dict = PeweeGetterDict
+# ---------- Marcas ----------
 
 class MarcaRequestModel(BaseModel):
     nombre: str
 
-class MarcaResponseModel(BaseModel):
+class MarcaResponseModel(ResponseModel):
     id: int
     nombre: str
 
-    class Config:
-        orm_mode = True
-        getter_dict = PeweeGetterDict
+# ---------- Usuarios ---------- 
 
 class UsuarioValidator():
 
@@ -93,15 +97,11 @@ class UsuarioRequestModel(BaseModel, UsuarioValidator):
     telefono: str
     direccion: str
 
-class UsuarioResponseModel(BaseModel):
+class UsuarioResponseModel(ResponseModel):
     id: int
     nivel_id: int
     username: str
     fecha_creacion: date
-
-    class Config:
-        orm_mode = True
-        getter_dict = PeweeGetterDict
 
 class UsuarioRequestPutModel(BaseModel, UsuarioValidator):
     username: str
@@ -149,7 +149,7 @@ class ProductoRequestModel(BaseModel, ProductoValidator):
     precio: float
     estatus: bool
 
-class ProductoResponseModel(BaseModel):
+class ProductoResponseModel(ResponseModel):
     id: int
     marca_id: int
     sku: str
@@ -157,10 +157,6 @@ class ProductoResponseModel(BaseModel):
     precio: float
     fecha_alta: datetime
     estatus: bool
-
-    class Config:
-        orm_mode = True
-        getter_dict = PeweeGetterDict
 
 class ProductoRequestPutModel(BaseModel, ProductoValidator):
     marca_id: int
@@ -173,12 +169,8 @@ class SeguimientoUsuariosRequestModel(BaseModel):
     usuario_id: int
     producto_id: int
 
-class SeguimientoUsuariosResponseModel(BaseModel):
+class SeguimientoUsuariosResponseModel(ResponseModel):
     id: int
     usuario_id: int
     producto_id: int
     fecha_visita: datetime
-
-    class Config:
-        orm_mode = True
-        getter_dict = PeweeGetterDict
