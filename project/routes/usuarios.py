@@ -10,7 +10,7 @@ from ..schemas import UsuarioRequestModel
 from ..schemas import UsuarioResponseModel
 from ..schemas import UsuarioRequestPutModel
 
-router = APIRouter(prefix='/api/v1/usuarios')
+router = APIRouter(prefix='/usuarios')
 
 @router.post('', response_model=UsuarioResponseModel)
 async def crear_usuario(usuario: UsuarioRequestModel):

@@ -8,7 +8,7 @@ from ..database import Nivel
 from ..schemas import NivelResponseModel
 from ..schemas import NivelRequestModel
 
-router = APIRouter(prefix='/api/v1/niveles')
+router = APIRouter(prefix='/niveles')
 
 @router.post('', response_model=NivelResponseModel)
 async def crear_nivel_de_usuario(nivel: NivelRequestModel):

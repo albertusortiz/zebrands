@@ -9,7 +9,7 @@ from ..schemas import ProductoRequestModel
 from ..schemas import ProductoResponseModel
 from ..schemas import ProductoRequestPutModel
 
-router = APIRouter(prefix='/api/v1/productos')
+router = APIRouter(prefix='/productos')
 
 @router.post('', response_model=ProductoResponseModel)
 async def crear_producto(producto: ProductoRequestModel):

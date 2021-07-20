@@ -8,7 +8,7 @@ from ..database import Marca
 from ..schemas import MarcaRequestModel
 from ..schemas import MarcaResponseModel
 
-router = APIRouter(prefix='/api/v1/marcas')
+router = APIRouter(prefix='/marcas')
 
 @router.post('', response_model=MarcaResponseModel)
 async def crear_marca(marca: MarcaRequestModel):

@@ -10,7 +10,7 @@ from ..database import SeguimientoUsuario
 from ..schemas import SeguimientoUsuariosRequestModel
 from ..schemas import SeguimientoUsuariosResponseModel
 
-router = APIRouter(prefix='/api/v1/seguimiento')
+router = APIRouter(prefix='/seguimiento')
 
 @router.post('', response_model=SeguimientoUsuariosResponseModel)
 async def seguimiento_de_usuarios(seguimiento: SeguimientoUsuariosRequestModel):
