@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import FastAPI
 from fastapi import HTTPException
+from pydantic.errors import NotNoneError
 
 from database import Nivel
 from database import Marca
@@ -137,12 +138,32 @@ async def obtener_nivel_de_usuarios():
 
     return [nivel for nivel in niveles]
 
+@app.get('/niveles/{nivel_id}', response_model=NivelResponseModel)
+async def obtener_nivel_id(nivel_id: int):
+
+    nivel_id = Nivel.select().where(Nivel.id == nivel_id).first()
+
+    if nivel_id is None:
+        raise HTTPException(status_code=404, detail='Nivel ID no encontrado.')
+
+    return nivel_id
+
 @app.get('/marcas', response_model=List[MarcaResponseModel])
 async def obtener_marcas():
     
     marcas = Marca.select()
 
     return [marca for marca in marcas]
+
+@app.get('/marcas/{marca_id}', response_model=MarcaResponseModel)
+async def obtener_marca_id(marca_id: int):
+
+    marca_id = Marca.select().where(Marca.id == marca_id).first()
+
+    if marca_id is None:
+        raise HTTPException(status_code=404, detail='ID de marca no encontrada.')
+
+    return marca_id
 
 @app.get('/usuarios', response_model=List[UsuarioResponseModel])
 async def obtener_usuarios():
@@ -151,6 +172,16 @@ async def obtener_usuarios():
 
     return [usuario for usuario in usuarios]
 
+@app.get('/usuarios/{usuario_id}', response_model=UsuarioResponseModel)
+async def obtener_usuario_id(usuario_id: int):
+
+    usuario_id = Usuario.select().where(Usuario.id == usuario_id).first()
+
+    if usuario_id is None:
+        raise HTTPException(status_code=404, detail='Usuario no encontrada.')
+
+    return usuario_id
+
 @app.get('/productos', response_model=List[ProductoResponseModel])
 async def obtener_productos():
     
@@ -158,9 +189,29 @@ async def obtener_productos():
 
     return [producto for producto in productos]
 
+@app.get('/productos/{producto_id}', response_model=ProductoResponseModel)
+async def obtener_producto_id(producto_id: int):
+
+    producto_id = Producto.select().where(Producto.id == producto_id).first()
+
+    if producto_id is None:
+        raise HTTPException(status_code=404, detail='Producto no encontrado.')
+
+    return producto_id
+
 @app.get('/seguimiento', response_model=List[SeguimientoUsuariosResponseModel])
 async def obtener_seguimiento_de_usuarios():
     
     seguimientos = SeguimientoUsuario.select()
 
     return [seguimiento for seguimiento in seguimientos]
+
+@app.get('/seguimiento/{seguimiento_id}', response_model=SeguimientoUsuariosResponseModel)
+async def obtener_seguimiento_id(seguimiento_id: int):
+
+    seguimiento_id = SeguimientoUsuario.select().where(SeguimientoUsuario.id == seguimiento_id).first()
+
+    if seguimiento_id is None:
+        raise HTTPException(status_code=404, detail='Seguimiento de usuario no encontrado.')
+
+    return seguimiento_id
