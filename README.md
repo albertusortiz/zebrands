@@ -17,3 +17,6 @@ En este proyecto seremos capaces de gestionar usuarios y productos delimitando a
 ## Catalogos
 Niveles de Usuarios
 ![Niveles de Usuarios](img/niveles.png)
+
+Marcas
+![Marcas](img/marcas.png)
