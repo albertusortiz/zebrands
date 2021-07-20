@@ -112,7 +112,7 @@ class ProductoRequestModel(BaseModel):
     marca_id: int
     sku: str
     nombre: str
-    precio: int
+    precio: float
     estatus: bool
 
     @validator('marca_id')
@@ -155,9 +155,8 @@ class ProductoResponseModel(BaseModel):
     marca_id: int
     sku: str
     nombre: str
-    precio: int
+    precio: float
     fecha_alta: datetime
-    fecha_baja: datetime
     estatus: bool
 
     class Config:

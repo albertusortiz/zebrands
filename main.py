@@ -1,8 +1,5 @@
-from os import pread
-from types import prepare_class
 from fastapi import FastAPI
 from fastapi import HTTPException
-from starlette.requests import HTTPConnection
 
 from database import Nivel
 from database import Marca
@@ -106,3 +103,5 @@ async def crear_producto(producto: ProductoRequestModel):
         precio = producto.precio,
         estatus = producto.estatus
     )
+
+    return producto

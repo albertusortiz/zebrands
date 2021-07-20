@@ -1,6 +1,7 @@
 import hashlib
 
 import os
+from typing import Optional
 from dotenv import load_dotenv
 from datetime import datetime
 
@@ -72,7 +73,6 @@ class Producto(Model):
     nombre = CharField(max_length=150)
     precio = FloatField()
     fecha_alta = DateTimeField(default=datetime.now)
-    fecha_baja = DateTimeField()
     estatus = BooleanField()
 
     def __str__(self):
