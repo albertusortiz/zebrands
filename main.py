@@ -151,3 +151,16 @@ async def obtener_usuarios():
 
     return [usuario for usuario in usuarios]
 
+@app.get('/productos', response_model=List[ProductoResponseModel])
+async def obtener_productos():
+    
+    productos = Producto.select()
+
+    return [producto for producto in productos]
+
+@app.get('/seguimiento', response_model=List[SeguimientoUsuariosResponseModel])
+async def obtener_seguimiento_de_usuarios():
+    
+    seguimientos = SeguimientoUsuario.select()
+
+    return [seguimiento for seguimiento in seguimientos]
