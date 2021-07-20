@@ -228,7 +228,7 @@ async def actualizar_usuario(usuario_id: int, review_request: UsuarioRequestPutM
     usuario_id = Usuario.select().where(Usuario.id == usuario_id).first()
 
     if usuario_id is None:
-        raise HTTPException(status_code=404, detail='Usuario no encontrada.')
+        raise HTTPException(status_code=404, detail='Usuario no encontrado.')
 
     usuario_id.username = review_request.username
     usuario_id.password = review_request.password
@@ -259,3 +259,15 @@ async def actualizar_producto(producto_id: int, review_request: ProductoRequestP
     producto_id.save()
 
     return producto_id
+
+@app.delete('/usuarios/{usuario_id}', response_model=UsuarioResponseModel)
+async def eliminar_un_usuario(usuario_id: int):
+    
+    usuario_id = Usuario.select().where(Usuario.id == usuario_id).first()
+
+    if usuario_id is None:
+        raise HTTPException(status_code=404, detail='Usuario no encontrado.')
+
+    usuario_id.delete_instance()
+
+    return usuario_id
