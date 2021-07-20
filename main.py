@@ -143,3 +143,11 @@ async def obtener_marcas():
     marcas = Marca.select()
 
     return [marca for marca in marcas]
+
+@app.get('/usuarios', response_model=List[UsuarioResponseModel])
+async def obtener_usuarios():
+    
+    usuarios = Usuario.select()
+
+    return [usuario for usuario in usuarios]
+
