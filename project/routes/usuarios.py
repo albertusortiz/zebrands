@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from typing import List
 
 from fastapi import APIRouter
@@ -7,6 +9,7 @@ from fastapi import HTTPException
 from fastapi import status
 
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer
 
 from ..database import Usuario
 from ..database import Nivel
@@ -15,82 +18,104 @@ from ..schemas import UsuarioRequestModel
 from ..schemas import UsuarioResponseModel
 from ..schemas import UsuarioRequestPutModel
 
+from ..middleware import create_token
+from ..middleware import get_current_user
+
 router = APIRouter(prefix='/usuarios')
 
 @router.post('', response_model=UsuarioResponseModel)
-async def crear_usuario(usuario: UsuarioRequestModel):
+async def crear_usuario(usuario: UsuarioRequestModel, token: str = Depends(get_current_user)):
 
-    if Usuario.select().where(Usuario.username == usuario.username).exists():
-        raise HTTPException(status_code=409, detail='El username ya se encuentra en uso.')
+    if token.get("nivel") == 1:
 
-    if Nivel.select().where(Nivel.id == usuario.nivel_id).first() is None:
-        raise HTTPException(status_code=404, detail="Nivel de usuario no encontrado")
+        if Usuario.select().where(Usuario.username == usuario.username).exists():
+            raise HTTPException(status_code=409, detail='El username ya se encuentra en uso.')
 
-    hash_password = Usuario.create_password(usuario.password)
+        if Nivel.select().where(Nivel.id == usuario.nivel_id).first() is None:
+            raise HTTPException(status_code=404, detail="Nivel de usuario no encontrado")
+
+        hash_password = Usuario.create_password(usuario.password)
+        
+        usuario = Usuario.create(
+            nivel_id=usuario.nivel_id,
+            username=usuario.username,
+            password=hash_password,
+            nombre_completo=usuario.nombre_completo,
+            fecha_nacimiento=usuario.fecha_nacimiento,
+            email=usuario.email,
+            telefono=usuario.telefono,
+            direccion=usuario.direccion
+        )
+
+        return usuario
     
-    usuario = Usuario.create(
-        nivel_id=usuario.nivel_id,
-        username=usuario.username,
-        password=hash_password,
-        nombre_completo=usuario.nombre_completo,
-        fecha_nacimiento=usuario.fecha_nacimiento,
-        email=usuario.email,
-        telefono=usuario.telefono,
-        direccion=usuario.direccion
-    )
-
-    return usuario
+    raise HTTPException(status_code=404, detail="Este usuario no tiene permisos para la petición.")
 
 @router.get('', response_model=List[UsuarioResponseModel])
-async def obtener_usuarios(page: int = 1, limit : int = 10):
-    
-    usuarios = Usuario.select().paginate(page, limit)
+async def obtener_usuarios(page: int = 1, limit : int = 10, token: str = Depends(get_current_user)):
 
-    return [usuario for usuario in usuarios]
+    if token.get("nivel") == 1:
+        usuarios = Usuario.select().paginate(page, limit)
+
+        return [usuario for usuario in usuarios]
+
+    raise HTTPException(status_code=404, detail="Este usuario no tiene permisos para la petición.")
 
 @router.get('/{usuario_id}', response_model=UsuarioResponseModel)
-async def obtener_usuario_id(usuario_id: int):
+async def obtener_usuario_id(usuario_id: int, token: str = Depends(get_current_user)):
 
-    usuario_id = Usuario.select().where(Usuario.id == usuario_id).first()
+    if token.get("nivel") == 1:
 
-    if usuario_id is None:
-        raise HTTPException(status_code=404, detail='Usuario no encontrada.')
+        usuario_id = Usuario.select().where(Usuario.id == usuario_id).first()
 
-    return usuario_id
+        if usuario_id is None:
+            raise HTTPException(status_code=404, detail='Usuario no encontrada.')
+
+        return usuario_id
+    
+    raise HTTPException(status_code=404, detail="Este usuario no tiene permisos para la petición.")
 
 @router.put('/{usuario_id}', response_model=UsuarioResponseModel)
-async def actualizar_usuario(usuario_id: int, review_request: UsuarioRequestPutModel):
+async def actualizar_usuario(usuario_id: int, review_request: UsuarioRequestPutModel, token: str = Depends(get_current_user)):
 
-    usuario_id = Usuario.select().where(Usuario.id == usuario_id).first()
+    if token.get("nivel") == 1:
 
-    if usuario_id is None:
-        raise HTTPException(status_code=404, detail='Usuario no encontrado.')
+        usuario_id = Usuario.select().where(Usuario.id == usuario_id).first()
 
-    hash_password = Usuario.create_password(review_request.password)
+        if usuario_id is None:
+            raise HTTPException(status_code=404, detail='Usuario no encontrado.')
 
-    usuario_id.username = review_request.username
-    usuario_id.password = hash_password
-    usuario_id.nombre_completo = review_request.nombre_completo
-    usuario_id.fecha_nacimiento = review_request.fecha_nacimiento
-    usuario_id.email = review_request.email
-    usuario_id.telefono = review_request.telefono
-    usuario_id.direccion = review_request.direccion
+        hash_password = Usuario.create_password(review_request.password)
 
-    usuario_id.save()
+        usuario_id.username = review_request.username
+        usuario_id.password = hash_password
+        usuario_id.nombre_completo = review_request.nombre_completo
+        usuario_id.fecha_nacimiento = review_request.fecha_nacimiento
+        usuario_id.email = review_request.email
+        usuario_id.telefono = review_request.telefono
+        usuario_id.direccion = review_request.direccion
 
-    return usuario_id
+        usuario_id.save()
+
+        return usuario_id
+    
+    raise HTTPException(status_code=404, detail="Este usuario no tiene permisos para la petición.")
 
 @router.delete('/{usuario_id}', response_model=UsuarioResponseModel)
-async def eliminar_un_usuario(usuario_id: int):
+async def eliminar_un_usuario(usuario_id: int, token: str = Depends(get_current_user)):
+
+    if token.get("nivel") == 1:
     
-    usuario_id = Usuario.select().where(Usuario.id == usuario_id).first()
+        usuario_id = Usuario.select().where(Usuario.id == usuario_id).first()
 
-    if usuario_id is None:
-        raise HTTPException(status_code=404, detail='Usuario no encontrado.')
+        if usuario_id is None:
+            raise HTTPException(status_code=404, detail='Usuario no encontrado.')
 
-    usuario_id.delete_instance()
+        usuario_id.delete_instance()
 
-    return usuario_id
+        return usuario_id
+
+    raise HTTPException(status_code=404, detail="Este usuario no tiene permisos para la petición.")
 
 @router.post('/login')
 async def login(form_data: OAuth2PasswordRequestForm = Depends()):
@@ -108,5 +133,6 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
         )
 
     return {
-        'mensaje': 'login'
+        'access_token': create_token(form_data.username, username.nivel_id),
+        'token_type': 'bearer'
     }
