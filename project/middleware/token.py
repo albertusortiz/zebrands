@@ -19,7 +19,7 @@ load_dotenv()
 SECRET = os.getenv('SECRETKEYWORD')
 
 
-oauth2_schema = OAuth2PasswordBearer(tokenUrl=' /api/v1/usuarios/login')
+oauth2_schema = OAuth2PasswordBearer(tokenUrl='/api/v1/usuarios/login')
 
 
 def create_token(username, nivel):
