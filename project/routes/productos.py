@@ -4,6 +4,7 @@ from fastapi import APIRouter
 from fastapi import HTTPException
 
 from ..database import Producto
+from ..database import Marca
 
 from ..schemas import ProductoRequestModel
 from ..schemas import ProductoResponseModel
