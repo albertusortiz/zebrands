@@ -1,7 +1,10 @@
 from typing import List
 
 from fastapi import APIRouter
+from fastapi import Depends
 from fastapi import HTTPException
+
+from fastapi import status
 
 from fastapi.security import OAuth2PasswordRequestForm
 
@@ -57,14 +60,16 @@ async def obtener_usuario_id(usuario_id: int):
 
 @router.put('/{usuario_id}', response_model=UsuarioResponseModel)
 async def actualizar_usuario(usuario_id: int, review_request: UsuarioRequestPutModel):
-    
+
     usuario_id = Usuario.select().where(Usuario.id == usuario_id).first()
 
     if usuario_id is None:
         raise HTTPException(status_code=404, detail='Usuario no encontrado.')
 
+    hash_password = Usuario.create_password(review_request.password)
+
     usuario_id.username = review_request.username
-    usuario_id.password = review_request.password
+    usuario_id.password = hash_password
     usuario_id.nombre_completo = review_request.nombre_completo
     usuario_id.fecha_nacimiento = review_request.fecha_nacimiento
     usuario_id.email = review_request.email
@@ -86,3 +91,22 @@ async def eliminar_un_usuario(usuario_id: int):
     usuario_id.delete_instance()
 
     return usuario_id
+
+@router.post('/login')
+async def login(form_data: OAuth2PasswordRequestForm = Depends()):
+
+    hash_password = Usuario.create_password(form_data.password)
+
+    username = Usuario.select().where(Usuario.username == form_data.username).first()
+    password = Usuario.select().where(Usuario.password == hash_password).first()
+
+    if username is None or password is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+
+    return {
+        'mensaje': 'login'
+    }
