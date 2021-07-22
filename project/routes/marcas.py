@@ -5,11 +5,14 @@ from fastapi import Depends
 from fastapi import HTTPException
 
 from ..database import Marca
+from ..database import Usuario
 
 from ..schemas import MarcaRequestModel
 from ..schemas import MarcaResponseModel
 
 from ..middleware import get_current_user
+
+from ..services import enviar_correo_de_notificacion
 
 router = APIRouter(prefix='/marcas')
 
@@ -18,9 +21,19 @@ async def crear_marca(marca: MarcaRequestModel, token: str = Depends(get_current
 
     if token.get("nivel") == 1:
 
+        usuario = Usuario.select().where(Usuario.username == token.get("username")).first()
+
+        print(usuario.email)
+
         marca = Marca.create(
             nombre=marca.nombre
         )
+
+        enviar_correo_de_notificacion(usuario.email,
+                                    str(token.get("username")), 
+                                    "creo",
+                                    "marcas",
+                                    str(marca.id))
 
         return marca
 

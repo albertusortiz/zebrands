@@ -24,7 +24,7 @@ def enviar_correo_de_notificacion(email_que_recibe, nombre_de_usuario, evento, e
   text = """\
   Hola, ¿Como estas?
   Este correo es para notificar que el usuario {mail_nombre_de_usuario}
-  a {mail_evento} el registro del endpoint {mail_endpoint} con el siguiente ID {mail_id_registro_endpoint}.
+  *{mail_evento}* el registro del endpoint {mail_endpoint} con el siguiente ID {mail_id_registro_endpoint}.
   """.format(mail_nombre_de_usuario=nombre_de_usuario, mail_evento=evento, mail_endpoint=endpoint, mail_id_registro_endpoint=id_registro_endpoint)
 
   html = """\
