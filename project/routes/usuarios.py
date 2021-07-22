@@ -69,7 +69,7 @@ async def obtener_usuario_id(usuario_id: int, token: str = Depends(get_current_u
         usuario_id = Usuario.select().where(Usuario.id == usuario_id).first()
 
         if usuario_id is None:
-            raise HTTPException(status_code=404, detail='Usuario no encontrada.')
+            raise HTTPException(status_code=404, detail='Usuario no encontrado.')
 
         return usuario_id
     

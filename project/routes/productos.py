@@ -4,8 +4,9 @@ from fastapi import APIRouter
 from fastapi import Depends
 from fastapi import HTTPException
 
-from ..database import Producto
+from ..database import Producto, Usuario
 from ..database import Marca
+from ..database import SeguimientoUsuario
 
 from ..schemas import ProductoRequestModel
 from ..schemas import ProductoResponseModel
@@ -46,14 +47,41 @@ async def obtener_productos(page: int = 1, limit : int = 10):
     return [producto for producto in productos]
 
 @router.get('/{producto_id}', response_model=ProductoResponseModel)
-async def obtener_producto_id(producto_id: int):
+async def obtener_producto_id(producto_id: int, token: str = Depends(get_current_user)):
 
-    producto_id = Producto.select().where(Producto.id == producto_id).first()
+    if token.get("nivel") == 1:
 
-    if producto_id is None:
-        raise HTTPException(status_code=404, detail='Producto no encontrado.')
+        producto_id = Producto.select().where(Producto.id == producto_id).first()
 
-    return producto_id
+        if producto_id is None:
+            raise HTTPException(status_code=404, detail='Producto no encontrado.')
+
+        return producto_id
+
+    if token.get("nivel") == 2:
+
+        producto_id = Producto.select().where(Producto.id == producto_id).first()
+
+        if producto_id is None:
+            raise HTTPException(status_code=404, detail='Producto no encontrado.')
+
+        usuario_id = Usuario.select().where(Usuario.username == token.get("username")).first()
+
+        if usuario_id is None:
+            raise HTTPException(status_code=404, detail='Usuario no encontrado.')
+
+        """
+        Cuando un usuario haga login y visite un producto en particualar,
+        esta visita quedara guardada en el modelo SeguimientoUsuario.
+        """
+        SeguimientoUsuario.create(
+            usuario_id=usuario_id.id,
+            producto_id=producto_id
+        )
+
+        return producto_id
+
+    raise HTTPException(status_code=404, detail="Este usuario no pertenece a ningun tipo de nivel de usuario valido.")
 
 @router.put('/{producto_id}', response_model=ProductoResponseModel)
 async def actualizar_producto(producto_id: int, review_request: ProductoRequestPutModel, token: str = Depends(get_current_user)):
