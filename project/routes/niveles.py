@@ -11,6 +11,8 @@ from ..schemas import NivelRequestModel
 
 from ..middleware import get_current_user
 
+from ..services import enviar_correo_de_notificacion
+
 router = APIRouter(prefix='/niveles')
 
 @router.post('', response_model=NivelResponseModel)
@@ -22,6 +24,12 @@ async def crear_nivel_de_usuario(nivel: NivelRequestModel, token: str = Depends(
             nombre=nivel.nombre,
             tipo=nivel.tipo
         )
+
+        enviar_correo_de_notificacion("alberto.ortiz.vargas@gmail.com",
+                                    str(token.get("username")), 
+                                    "creo",
+                                    "niveles",
+                                    str(nivel.id))
 
         return nivel
 

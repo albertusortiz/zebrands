@@ -21,6 +21,8 @@ from ..schemas import UsuarioRequestPutModel
 from ..middleware import create_token
 from ..middleware import get_current_user
 
+from ..services import enviar_correo_de_notificacion
+
 router = APIRouter(prefix='/usuarios')
 
 @router.post('', response_model=UsuarioResponseModel)
@@ -46,6 +48,12 @@ async def crear_usuario(usuario: UsuarioRequestModel, token: str = Depends(get_c
             telefono=usuario.telefono,
             direccion=usuario.direccion
         )
+
+        enviar_correo_de_notificacion("alberto.ortiz.vargas@gmail.com",
+                                    str(token.get("username")), 
+                                    "creo",
+                                    "usuarios",
+                                    str(usuario.id))
 
         return usuario
     
@@ -97,6 +105,12 @@ async def actualizar_usuario(usuario_id: int, review_request: UsuarioRequestPutM
 
         usuario_id.save()
 
+        enviar_correo_de_notificacion("alberto.ortiz.vargas@gmail.com",
+                                    str(token.get("username")), 
+                                    "actualizo",
+                                    "usuarios",
+                                    str(usuario_id.id))
+
         return usuario_id
     
     raise HTTPException(status_code=404, detail="Este usuario no tiene permisos para la petición.")
@@ -112,6 +126,12 @@ async def eliminar_un_usuario(usuario_id: int, token: str = Depends(get_current_
             raise HTTPException(status_code=404, detail='Usuario no encontrado.')
 
         usuario_id.delete_instance()
+
+        enviar_correo_de_notificacion("alberto.ortiz.vargas@gmail.com",
+                                    str(token.get("username")), 
+                                    "elimino",
+                                    "usuarios",
+                                    str(usuario_id.id))
 
         return usuario_id
 

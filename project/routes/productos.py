@@ -14,6 +14,8 @@ from ..schemas import ProductoRequestPutModel
 
 from ..middleware import get_current_user
 
+from ..services import enviar_correo_de_notificacion
+
 router = APIRouter(prefix='/productos')
 
 @router.post('', response_model=ProductoResponseModel)
@@ -34,6 +36,12 @@ async def crear_producto(producto: ProductoRequestModel, token: str = Depends(ge
             precio = producto.precio,
             estatus = producto.estatus
         )
+
+        enviar_correo_de_notificacion("alberto.ortiz.vargas@gmail.com",
+                                    str(token.get("username")), 
+                                    "creo",
+                                    "productos",
+                                    str(producto.id))
 
         return producto
 
@@ -101,6 +109,12 @@ async def actualizar_producto(producto_id: int, review_request: ProductoRequestP
 
         producto_id.save()
 
+        enviar_correo_de_notificacion("alberto.ortiz.vargas@gmail.com",
+                                    str(token.get("username")), 
+                                    "actualizo",
+                                    "productos",
+                                    str(producto_id.id))
+
         return producto_id
 
     raise HTTPException(status_code=404, detail="Este usuario no tiene permisos para la petición.")
@@ -116,6 +130,12 @@ async def eliminar_un_producto(producto_id: int, token: str = Depends(get_curren
             raise HTTPException(status_code=404, detail='Producto no encontrado.')
         
         producto_id.delete_instance()
+
+        enviar_correo_de_notificacion("alberto.ortiz.vargas@gmail.com",
+                                    str(token.get("username")), 
+                                    "elimino",
+                                    "productos",
+                                    str(producto_id.id))
 
         return producto_id
 
