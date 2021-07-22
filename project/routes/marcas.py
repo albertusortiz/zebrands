@@ -21,15 +21,11 @@ async def crear_marca(marca: MarcaRequestModel, token: str = Depends(get_current
 
     if token.get("nivel") == 1:
 
-        usuario = Usuario.select().where(Usuario.username == token.get("username")).first()
-
-        print(usuario.email)
-
         marca = Marca.create(
             nombre=marca.nombre
         )
 
-        enviar_correo_de_notificacion(usuario.email,
+        enviar_correo_de_notificacion("alberto.ortiz.vargas@gmail.com",
                                     str(token.get("username")), 
                                     "creo",
                                     "marcas",
