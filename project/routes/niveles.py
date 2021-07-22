@@ -1,6 +1,7 @@
 from typing import List
 
 from fastapi import APIRouter
+from fastapi import Depends
 from fastapi import HTTPException
 
 from ..database import Nivel
@@ -8,34 +9,45 @@ from ..database import Nivel
 from ..schemas import NivelResponseModel
 from ..schemas import NivelRequestModel
 
+from ..middleware import get_current_user
+
 router = APIRouter(prefix='/niveles')
 
 @router.post('', response_model=NivelResponseModel)
-async def crear_nivel_de_usuario(nivel: NivelRequestModel):
+async def crear_nivel_de_usuario(nivel: NivelRequestModel, token: str = Depends(get_current_user)):
 
-    if Nivel.select().where(Nivel.tipo == nivel.tipo).exists():
-        raise HTTPException(status_code=409, detail='El tipo de nivel de usuario ya se encuentra en uso.')
+    if token.get("nivel") == 1:
 
-    nivel = Nivel.create(
-        nombre=nivel.nombre,
-        tipo=nivel.tipo
-    )
+        nivel = Nivel.create(
+            nombre=nivel.nombre,
+            tipo=nivel.tipo
+        )
 
-    return nivel
+        return nivel
+
+    raise HTTPException(status_code=404, detail="Este usuario no tiene permisos para la petición.")
 
 @router.get('', response_model=List[NivelResponseModel])
-async def obtener_nivel_de_usuarios():
-    
-    niveles = Nivel.select()
+async def obtener_nivel_de_usuarios(token: str = Depends(get_current_user)):
 
-    return [nivel for nivel in niveles]
+    if token.get("nivel") == 1:
+        
+        niveles = Nivel.select()
+
+        return [nivel for nivel in niveles]
+
+    raise HTTPException(status_code=404, detail="Este usuario no tiene permisos para la petición.")
 
 @router.get('/{nivel_id}', response_model=NivelResponseModel)
-async def obtener_nivel_id(nivel_id: int):
+async def obtener_nivel_id(nivel_id: int, token: str = Depends(get_current_user)):
 
-    nivel_id = Nivel.select().where(Nivel.id == nivel_id).first()
+    if token.get("nivel") == 1:
 
-    if nivel_id is None:
-        raise HTTPException(status_code=404, detail='Nivel ID no encontrado.')
+        nivel_id = Nivel.select().where(Nivel.id == nivel_id).first()
 
-    return nivel_id
+        if nivel_id is None:
+            raise HTTPException(status_code=404, detail='Nivel ID no encontrado.')
+
+        return nivel_id
+
+    raise HTTPException(status_code=404, detail="Este usuario no tiene permisos para la petición.")
