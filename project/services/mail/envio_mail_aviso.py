@@ -8,52 +8,48 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SENDER_EMAIL = os.getenv('SENDER_EMAIL')
-PASSWORD_EMAIL = os.getenv('PASSWORD_EMAIL')
-SERVER_SMTP = os.getenv('SERVER_SMTP')
-PORT_SMTP = os.getenv('PORT_SMTP')
+EMAIL_QUE_ENVIA = os.getenv('SENDER_EMAIL')
+EMAIL_PASSWORD = os.getenv('PASSWORD_EMAIL')
+SERVIDOR_SMTP = os.getenv('SERVER_SMTP')
+PUERTO_SMTP = os.getenv('PORT_SMTP')
 
-#sender_email = 'a.ortiz@caribbeandigitalgroup.com'
-#receiver_email = 'alberto.ortiz.vargas@gmail.com'
-#password = "BRv=rSm%_es!"
 
-message = MIMEMultipart("alternative")
-message["Subject"] = "multipart test"
-message["From"] = sender_email
-message["To"] = receiver_email
+def enviar_correo_de_notificacion(email_que_recibe, nombre_de_usuario, evento, endpoint, id_registro_endpoint):
+  message = MIMEMultipart("alternative")
+  message["Subject"] = "Aviso de modificación por parte de un Super Administrador"
+  message["From"] = EMAIL_QUE_ENVIA
+  message["To"] = email_que_recibe
 
-# Create the plain-text and HTML version of your message
-text = """\
-Hi,
-How are you?
-Real Python has many great tutorials:
-www.realpython.com"""
+  # Creando version en texto plano y version HTML del mensaje.
+  text = """\
+  Hola, ¿Como estas?
+  Este correo es para notificar que el usuario {mail_nombre_de_usuario}
+  a {mail_evento} el registro del endpoint {mail_endpoint} con el siguiente ID {mail_id_registro_endpoint}.
+  """.format(mail_nombre_de_usuario=nombre_de_usuario, mail_evento=evento, mail_endpoint=endpoint, mail_id_registro_endpoint=id_registro_endpoint)
 
-html = """\
-<html>
-  <body>
-    <p>Hi,<br>
-       How are you?<br>
-       <a href="http://www.realpython.com">Real Python</a> 
-       has many great tutorials.
-    </p>
-  </body>
-</html>
-"""
+  html = """\
+  <html>
+    <body>
+      <p>Hola, ¿Como estas?<br>
+        Este correo es para notificar que el usuario <b>{mail_nombre_de_usuario}<b/>
+        a {mail_evento} el registro del endpoint {mail_endpoint} con el siguiente ID {mail_id_registro_endpoint}.
+      </p>
+    </body>
+  </html>
+  """.format(mail_nombre_de_usuario=nombre_de_usuario, mail_evento=evento, mail_endpoint=endpoint, mail_id_registro_endpoint=id_registro_endpoint)
 
-# Turn these into plain/html MIMEText objects
-part1 = MIMEText(text, "plain")
-part2 = MIMEText(html, "html")
+  # Convirtiendo a objetos las versiones de los mensajes
+  part1 = MIMEText(text, "plain")
+  part2 = MIMEText(html, "html")
 
-# Add HTML/plain-text parts to MIMEMultipart message
-# The email client will try to render the last part first
-message.attach(part1)
-message.attach(part2)
+  # El cliente de correo electrónico intentará renderizar primero el mensaje HTML.
+  message.attach(part1)
+  message.attach(part2)
 
-# Create secure connection with server and send email
-context = ssl.create_default_context()
-with smtplib.SMTP_SSL("a2plcpnl0905.prod.iad2.secureserver.net", 465, context=context) as server:
-    server.login(sender_email, password)
-    server.sendmail(
-        sender_email, receiver_email, message.as_string()
-    )
+  # Creando conexión segura con el servidor para enviar el email.
+  context = ssl.create_default_context()
+  with smtplib.SMTP_SSL(SERVIDOR_SMTP, PUERTO_SMTP, context=context) as server:
+      server.login(EMAIL_QUE_ENVIA, EMAIL_PASSWORD)
+      server.sendmail(
+          EMAIL_QUE_ENVIA, email_que_recibe, message.as_string()
+      )
